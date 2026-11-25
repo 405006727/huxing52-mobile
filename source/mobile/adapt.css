@@ -34,7 +34,7 @@ body.left-open #dsMobileMask, body.right-open #dsMobileMask { opacity: 1; pointe
 #dsMobileTips.on { opacity: 1; }
 
 /* 自建的确认 / 数字选择弹层 */
-#dsMConfirm { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 18px; background: rgba(8, 14, 26, .5)▲; }
+#dsMConfirm { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 18px; background: rgba(8, 14, 26, .5); }
 #dsMConfirm .dsm-box { width: 100%; max-width: 360px; background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 24px 60px rgba(8, 14, 26, .35); }
 #dsMConfirm h3 { margin: 0 0 8px; font-size: 16px; }
 #dsMConfirm p { margin: 0 0 14px; color: var(--muted, #6b7380); font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
@@ -51,7 +51,7 @@ body.left-open #dsMobileMask, body.right-open #dsMobileMask { opacity: 1; pointe
     row-gap: 8px;
   }
 
-  /* 触控目标 ≥ 40px */
+  /* 触控目标 >= 40px */
   #leftToggle, #rightToggle { width: 44px; height: 44px; border-radius: 11px; font-size: 19px; }
   header .seg button { min-height: 40px; padding: 0 11px; }
   header .seg button svg { width: 20px; height: 20px; }
