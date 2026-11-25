@@ -1,0 +1,10 @@
+# 构建产物与工具链不入库
+build/
+.gradle/
+local.properties
+*.apk
+*.jks
+*.keystore
+dl/
+tools/
+node_modules/
