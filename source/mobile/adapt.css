@@ -1,0 +1,122 @@
+/* ===================================================================
+   52户型装修设计 · 手机端适配层
+   由 tools/build-mobile.mjs 注入到 designer.html 之后（覆盖原生样式）
+   只做「手机该有的手势与尺寸」，不改设计器任何业务逻辑
+   =================================================================== */
+
+html, body { overscroll-behavior: none; }
+body { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+* { -webkit-touch-callout: none; }
+input, textarea, select { -webkit-user-select: text; user-select: text; }
+
+/* 画布手势全交给设计器自己的 pointer 逻辑，别让浏览器抢双指缩放 */
+#c2d, #c3d { touch-action: none; }
+
+/* 抽屉遮罩 */
+#dsMobileMask {
+  position: absolute; inset: 0; z-index: 11;
+  background: rgba(8, 14, 26, .45);
+  opacity: 0; pointer-events: none; transition: opacity .18s;
+}
+body.left-open #dsMobileMask, body.right-open #dsMobileMask { opacity: 1; pointer-events: auto; }
+
+/* 底部提示条 */
+#dsMobileTips {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  z-index: 90; max-width: 84vw;
+  background: rgba(17, 24, 39, .9); color: #fff;
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13px; line-height: 1.55;
+  box-shadow: 0 10px 30px rgba(8, 14, 26, .3);
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+#dsMobileTips.on { opacity: 1; }
+
+/* 自建的确认 / 数字选择弹层 */
+#dsMConfirm { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 18px; background: rgba(8, 14, 26, .5)▲; }
+#dsMConfirm .dsm-box { width: 100%; max-width: 360px; background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 24px 60px rgba(8, 14, 26, .35); }
+#dsMConfirm h3 { margin: 0 0 8px; font-size: 16px; }
+#dsMConfirm p { margin: 0 0 14px; color: var(--muted, #6b7380); font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
+#dsMConfirm .dsm-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+#dsMConfirm .dsm-row button { min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line, #e4e7eb); background: #fff; font-size: 14px; }
+#dsMConfirm .dsm-row button.primary { background: var(--accent, #2f6fed); border-color: var(--accent, #2f6fed); color: #fff; }
+
+@media (max-width: 900px) {
+  /* 安全区：刘海 / 底部手势条 */
+  header {
+    padding-top: calc(6px + env(safe-area-inset-top, 0px)) !important;
+    padding-left: calc(8px + env(safe-area-inset-left, 0px)) !important;
+    padding-right: calc(8px + env(safe-area-inset-right, 0px)) !important;
+    row-gap: 8px;
+  }
+
+  /* 触控目标 ≥ 40px */
+  #leftToggle, #rightToggle { width: 44px; height: 44px; border-radius: 11px; font-size: 19px; }
+  header .seg button { min-height: 40px; padding: 0 11px; }
+  header .seg button svg { width: 20px; height: 20px; }
+  header .btn { min-height: 40px; }
+  #undoBtn, #redoBtn { min-width: 40px; min-height: 40px; padding: 0; }
+  #exportMenu > .btn, #moreMenu > .btn { min-width: 44px; min-height: 40px; padding: 0 10px; font-size: 18px !important; }
+
+  /* 顶栏重排成三行：① 面板/视图/属性/更多 ② 工具条（横滑） ③ 撤销重做 + 存开文件 + 导出图纸 */
+  header .sep, header .grow { display: none; }
+  #leftToggle { order: 1; }
+  #schemeBtn { order: 2; }
+  #viewSeg { order: 3; }
+  #rightToggle { order: 4; }
+  #moreMenu { order: 5; }
+  #toolSeg { order: 6; flex: 1 1 100%; max-width: 100%; }
+  #undoBtn { order: 11; }
+  #redoBtn { order: 12; }
+  #saveFileBtn { order: 13; }
+  #openFileBtn { order: 14; }
+  #exportMenu { order: 15; margin-left: auto; }
+
+  /* 工具栏横向滑动，不挤成一排小图标 */
+  #toolSeg {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    max-width: 100%; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; overscroll-behavior-x: contain;
+  }
+  #toolSeg::-webkit-scrollbar { display: none; }
+
+  /* 抽屉加宽（内核默认 220/240 在手机上偏窄） */
+  aside#leftPanel { width: min(88vw, 380px); }
+  aside.right { width: min(90vw, 400px); }
+
+  .tbtn { min-height: 48px; font-size: 13px; }
+  .btn { min-height: 38px; }
+  .tabs button { padding: 12px 0 11px; }
+
+  /* 浮层避开底部安全区 */
+  .ov-tr { bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important; }
+  .ov-br { bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important; right: calc(12px + env(safe-area-inset-right, 0px)) !important; }
+  .overlay.ov-tr .seg button { padding: 7px 10px; min-height: 40px; }
+  .overlay.ov-br .iconbtn { width: 40px; height: 40px; }
+
+  /* 3D 顶部工具在手机上会挤成 3 行 → 改成单行横滑，把 3D 视野还给模型 */
+  #pane3d .overlay.ov-tl {
+    left: 8px; right: 8px; max-width: none;
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 6px;
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    padding: 2px 0 4px;
+  }
+  #pane3d .overlay.ov-tl::-webkit-scrollbar { display: none; }
+  #pane3d .overlay.ov-tl > * { flex: 0 0 auto; }
+  #pane3d .overlay.ov-tl .btn.glass { white-space: nowrap; }
+
+  /* 楼层面板别压住画布 */
+  .floordock { max-height: 56vh; overflow: auto; width: min(150px, 40vw); }
+
+  /* 下拉菜单贴到可视区（手机上父级浮动条会把 absolute 菜单裁掉） */
+  #moreMenu .dropdown.open, #exportMenu .dropdown.open {
+    position: fixed; left: auto; right: calc(8px + env(safe-area-inset-right, 0px));
+    top: calc(126px + env(safe-area-inset-top, 0px));
+    width: min(86vw, 340px); max-height: 62vh; overflow-y: auto;
+    z-index: 80; padding: 6px; border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(8, 14, 26, .28);
+  }
+  #moreMenu .dropdown.open button, #exportMenu .dropdown.open button { padding: 12px; font-size: 15px; }
+}
