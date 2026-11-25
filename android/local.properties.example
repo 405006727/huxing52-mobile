@@ -1,0 +1,2 @@
+# 复制为 android/local.properties 后改成自己的 SDK 路径（此文件不入库）
+sdk.dir=<Android SDK 路径，如 C:/AndroidSdk>

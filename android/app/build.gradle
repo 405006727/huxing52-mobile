@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.2'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+allprojects {
+    repositories {
+        google()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+}
+
+android {
+    namespace 'com.huxing52.designer'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.huxing52.designer'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('keystore/huxing52.jks')
+            storePassword 'huxing52designer'
+            keyAlias 'huxing52'
+            keyPassword 'huxing52designer'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/*.kotlin_module']
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.9.0'
+}
